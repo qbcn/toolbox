@@ -5,6 +5,16 @@ document.getElementsByTagName('head')[0].appendChild(func_js);
 */
 
 console.log('[x_func]i am loaded.');
+var x_func_load_jq = function(){
+  var jq_js = document.createElement('script');
+  jq_js.src = "http://x1.t.fastbee.cn/assets/js/jquery.min.js";
+  document.getElementsByTagName('head')[0].appendChild(jq_js);
+  setTimeout(function(){
+    console.log('[x_func]jquery loaded');
+    jQuery.noConflict();
+    return;
+  },500);
+}
 
 //比价&标记@tb.shuaishou.com
 var x_func_price_diff = function(){
@@ -40,12 +50,11 @@ var x_func_price_diff = function(){
   
 //分销订单导出@mxtq.tg.taoex.com
 var x_func_export_mxtq_order = function(){
-  var jq_js = document.createElement('script');
-  jq_js.src = "http://x1.t.fastbee.cn/assets/js/jquery.min.js";
-  document.getElementsByTagName('head')[0].appendChild(jq_js);
+  x_func_load_jq();
 
   setTimeout(function(){
-    jQuery.noConflict();
+    console.log('[x_func]x_func_export_mxtq_order started');
+
     var items = jQuery('#workground #main .finder-list tr.row');
     var logs ='';
     for (var i=0; i<items.length; i++) {
@@ -58,17 +67,17 @@ var x_func_export_mxtq_order = function(){
     }
     console.log(logs);
     copy(logs);
-  },500);
+    return;
+  },1000);
 }
 
 //分享音频导出@pan.baidu.com
 var x_func_export_mxtq_audio = function(){
-  var jq_js = document.createElement('script');
-  jq_js.src = "http://x1.t.fastbee.cn/assets/js/jquery.min.js";
-  document.getElementsByTagName('head')[0].appendChild(jq_js);
+  x_func_load_jq();
 
   setTimeout(function(){
-    jQuery.noConflict();
+    console.log('[x_func]x_func_export_mxtq_audio started');
+
     var items = jQuery('dd.file-item');
     var logs ='';
     for (var i=0; i<items.length; i++) {
@@ -81,5 +90,6 @@ var x_func_export_mxtq_audio = function(){
     }
     console.log(logs);
     copy(logs);
-  },500);
+    return;
+  },1000);
 }

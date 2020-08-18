@@ -3,10 +3,11 @@ var mxtq_js = document.createElement('script');
 mxtq_js.src = "http://x1.t.fastbee.cn/assets/js/x_mxtq.js";
 document.getElementsByTagName('head')[0].appendChild(mxtq_js);
 
-var x_mxtq_job_ctl = x_mxtq_order_users(12500, 12600);  // create job
-x_mxtq_job_ctl.start_job(); // start job
+var x_mxtq_job_ctl = x_mxtq_order_users(55696,60000);  // create job
+x_mxtq_job_ctl.start_job(60001,70000); // start job
 x_mxtq_job_ctl.stop_job();  // stop job
 
+// test id: [52389, 52390] [53761, 54576] [55556]
 // test data
 var user_a = {
   qq:'40032363',
@@ -73,7 +74,7 @@ var x_mxtq_order_users = function(start, end){
 
   var report_log = function(){
     var x_url = "http://x1.t.fastbee.cn/index.php/user/api/log";
-    var log = {'event':'mxtq_user','start':_start, 'end':_end, 'success':_success, 'fail':_fail, 'timeout':_timeout};
+    var log = {'event':'mxtq_user','start':_start, 'end':_end, 'stop':_cur, 'success':_success, 'fail':_fail, 'timeout':_timeout};
     console.log('[x_mxtq]report_log success:' + _success + ', fail:' + _fail + ', timeout:' + _timeout);
     jQuery.ajax({url:x_url, dataType:'jsonp', data:log, success:function(data){
       console.log('[x_mxtq]report_log result:' + data.ret + ', msg:' + data.msg);
@@ -115,14 +116,18 @@ var x_mxtq_order_users = function(start, end){
     jQuery.post(mxtq_url, function(data){
       var order_dom = jQuery(data);
       var tbnick = jQuery('table.orderdetails_basic td:eq(23)', order_dom).text();
+      var mail = jQuery('table.orderdetails_basic td:eq(27)', order_dom).text();
       var name = jQuery('table.orderdetails_basic td:eq(30)', order_dom).text();
       var phone = jQuery('table.orderdetails_basic td:eq(31)', order_dom).text();
       var mobile = jQuery('table.orderdetails_basic td:eq(32)', order_dom).text();
       var area = jQuery('table.orderdetails_basic td:eq(33)', order_dom).text();
       var addr = area + jQuery('table.orderdetails_basic td:eq(34)', order_dom).text();
+      if (mobile.length == 0) {
+        mobile = phone;
+      }
 
       console.log('[x_mxtq]order_user get name:' + name + ', nick:' + tbnick);
-      save_user({'tbnick':tbnick, 'name':name, 'phone':phone, 'mobile':mobile, 'addr':addr});
+      save_user({'tbnick':tbnick, 'mail':mail, 'name':name, 'phone':phone, 'mobile':mobile, 'addr':addr, 'order':oid});
     })
   }
 
@@ -163,7 +168,15 @@ var x_mxtq_order_users = function(start, end){
     return ;
   }
 
-  var start_job = function(){
+  var start_job = function(start, end){
+    if (undefined != start){
+      _start = start;
+    }
+    if (undefined != end){
+      _end = end
+    }
+    _cur = _start - 1;
+
     console.log('[x_mxtq]start_job @' + _cur);
     _stop_job = false;
     next_job(); //发起第一个job
@@ -173,8 +186,8 @@ var x_mxtq_order_users = function(start, end){
     _stop_job = true;
   }
 
-  _cur = _start - 1;
-  start_job();
+  start_job(_start, _end);
+
   return {'start_job':start_job, 'stop_job':stop_job};
 }
 
